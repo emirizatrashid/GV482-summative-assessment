@@ -1,0 +1,44 @@
+The database contains the following variables:
+
+- State (Full name)
+
+- Year 
+
+- TotalArrest BlackTotalArrest DrugArrest BlackDrugArrest
+The data are from FBI Crime Data Explorer website (https://cde.ucr.cjis.gov/)
+Data are divided by population
+Reporting is voluntary and not all agencies report in a state (or report consistently)
+
+- Agencies
+Number of Agencies reporting in the state in a given year
+
+- VoteAfterPrison
+Dummy variable taking value one if a state allows fellons to vote after exiting prison
+
+- VoteAfterParole
+Dummy variable taking value one if a state allows fellons to vote after finishing parole
+
+- VoteAfterProbation
+Dummy variable taking value one if a state allows fellons to vote after finishing their whole sentence (Prison + Parole + Probation)
+
+- BlackPct, HispPct, BlackPct_2000, HispPct_2000
+Variables measuring the share of African Americans (Black) and the share of Hispanics (Hisp) in the state (in % point so 9 = 9%)
+One variable varies with time (BlackPct HispPct), one variable consists of the share in 2000 (BlackPct_2000 HispPct_2000, constant over time)
+Variables are from the Census data
+
+- Under19Pct Over65Pct 
+Variables measuring the share of under 19 and over 65 in the population, respectively (also in percentage point)
+Also from the Census data
+
+- GDPpercapita Growth Unemp SurplusDeficitPercent
+Set of economic variables: GDP per capita, Growth rate of GDP, Unemployment, and State surplus/deficit, respectively
+GDP and Growth come from the Bureau of Economic Analysis
+Unemployment data come from Bureau of Labour Statistics
+Surplus/deficit comes from NASBO Expenditures Report
+
+
+- Gov_dem Gov_ind Gov_rep Leg_dem Leg_div
+Set of political variables
+Gov_dem, Gov_ind, Gov_rep is an indicator variable equal to one when the governorship is held by a democrat, an independent, or a republican, respecitvely
+Leg_dem is an indicator variable equal to one if the democratic party holds the majority in the legislature
+Leg_div is an indicator variable equal to one if the legislature and governorship are controlled by different parties. 
