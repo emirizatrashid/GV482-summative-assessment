@@ -15,7 +15,7 @@ preserve
 collapse (mean) TotalArrest BlackTotalArrest DrugArrest BlackDrugArrest, by(Year)
 
 //to produce the graph
-twoway line TotalArrest Year || line BlackTotalArrest Year 
+//twoway line TotalArrest Year || line BlackTotalArrest Year 
 twoway line BlackDrugArrest Year || line DrugArrest Year 
 restore
 
