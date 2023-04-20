@@ -12,12 +12,11 @@ est clear
 global vars Agencies BlackPct HispPct BlackPct_2000 HispPct_2000 
 
 preserve
-collapse (mean) TotalArrest BlackTotalArrest DrugArrest, by(Year)
+collapse (mean) TotalArrest BlackTotalArrest DrugArrest BlackDrugArrest, by(Year)
 
 //to produce the graph
-
-//twoway line TotalArrest Year || line BlackTotalArrest Year 
-//twoway line BlackDrugArrest Year || line DrugArrest Year 
+twoway line TotalArrest Year || line BlackTotalArrest Year 
+twoway line BlackDrugArrest Year || line DrugArrest Year 
 restore
 
 //OLS regression
@@ -100,6 +99,7 @@ keep(VoteAfterParole) ///
 label booktabs nonotes noobs nomtitle collabels(none) ///
 scalars("N Obs") sfmt(0) ///
 mgroups("Total Arrests Per Capita", pattern(1 0 0 0) ///
+prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span}))  alignment(D{.}{.}{-1})
 
 
 est clear
