@@ -215,7 +215,18 @@ prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span}))  a
 
 est clear 
 
+
+
+
 //Now for the more robust research design 
 
+//generating year implemented
 
+bysort State (Year): gen VoteAfterPrisonImplemented = Year if VoteAfterPrison
+bysort State (VoteAfterPrisonImplemented): replace VoteAfterPrisonImplemented = VoteAfterPrisonImplemented[1]
+bysort State (Year): gen VoteAfterParoleImplemented = Year if VoteAfterParole
+bysort State (VoteAfterParoleImplemented): replace VoteAfterParoleImplemented = VoteAfterParoleImplemented[1]
+bysort State (Year): gen VoteAfterProbationImplemented = Year if VoteAfterProbation
+bysort State (VoteAfterProbationImplemented): replace VoteAfterProbationImplemented = VoteAfterProbationImplemented[1]
 
+//reverse causality issue
