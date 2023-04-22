@@ -2,22 +2,27 @@
 clear all
 use GV482_CourseworkData_2022-23.dta, clear 
 
+//creating the new variable which is the ratio of black to total arrests
+
+gen BlackTotalRatio = BlackTotalArrest/TotalArrest
+gen BlackDrugRatio = BlackDrugArrest/DrugArrest
+label variable BlackTotalRatio "Black Arrests to Total Arrests Ratio"
+label variable BlackDrugRatio "Black Drug Arrests to Total Drug Arrests Ratio"
+
 //summary statistics 
 
-qui estpost sum TotalArrest BlackTotalArrest DrugArrest BlackDrugArrest, d
+qui estpost sum TotalArrest BlackTotalArrest DrugArrest BlackDrugArrest BlackTotalRatio BlackDrugRatio, d
 esttab using "summary_stats.tex", tex cells("count(label(Obs.)) mean(fmt(3) label(Mean))  sd(fmt(3) label(St. Dev.)) min(fmt(3) label(Min.)) max(fmt(3) label(Max.))")  replace label nonum noobs
 
 est clear 
 
-global vars Agencies BlackPct HispPct BlackPct_2000 HispPct_2000 
-
-preserve
-collapse (mean) TotalArrest BlackTotalArrest DrugArrest BlackDrugArrest, by(Year)
+//preserve
+//collapse (mean) TotalArrest BlackTotalRatio DrugArrest BlackDrugRatio, by(Year)
 
 //to produce the graph
-//twoway line TotalArrest Year || line BlackTotalArrest Year 
-twoway line BlackDrugArrest Year || line DrugArrest Year 
-restore
+//twoway line TotalArrest Year || line DrugArrest Year  
+//twoway line BlackTotalRatio Year || line BlackDrugRatio Year 
+//restore
 
 //OLS regression
 
@@ -52,36 +57,38 @@ scalars("N Obs") sfmt(0) ///
 mgroups("Drug Arrest Per Capita", pattern(1 0 0 0) ///
 prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span}))  alignment(D{.}{.}{-1})
 
+est clear
 
-est clear 
+qui eststo: reg BlackTotalRatio VoteAfterPrison
+qui eststo: reg BlackTotalRatio VoteAfterPrison BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
+qui eststo: reg BlackTotalRatio VoteAfterPrison BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent
+qui eststo: reg BlackTotalRatio VoteAfterPrison BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
 
-qui eststo: reg BlackTotalArrest VoteAfterPrison
-qui eststo: reg BlackTotalArrest VoteAfterPrison BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
-qui eststo: reg BlackTotalArrest VoteAfterPrison BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent
-qui eststo: reg BlackTotalArrest VoteAfterPrison BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
-
-esttab using "vote_after_prison_BlackTotalArrest.tex", replace ///
+esttab using "vote_after_prison_BlackTotalRatio.tex", replace ///
 b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) ///
 keep(VoteAfterPrison) ///
 label booktabs nonotes noobs nomtitle collabels(none) ///
 scalars("N Obs") sfmt(0) ///
-mgroups("Black Arrest Per Capita", pattern(1 0 0 0) ///
+mgroups("Black to Total Arrest Ratio", pattern(1 0 0 0) ///
 prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span}))  alignment(D{.}{.}{-1})
 
 est clear
 
-qui eststo: reg BlackDrugArrest VoteAfterPrison
-qui eststo: reg BlackDrugArrest VoteAfterPrison BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
-qui eststo: reg BlackDrugArrest VoteAfterPrison BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent
-qui eststo: reg BlackDrugArrest VoteAfterPrison BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
+qui eststo: reg BlackDrugRatio VoteAfterPrison
+qui eststo: reg BlackDrugRatio VoteAfterPrison BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
+qui eststo: reg BlackDrugRatio VoteAfterPrison BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent
+qui eststo: reg BlackDrugRatio VoteAfterPrison BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
 
-esttab using "vote_after_prison_blackdrugarrest_percapita.tex", replace ///
+esttab using "vote_after_prison_BlackDrugRatio.tex", replace ///
 b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) ///
 keep(VoteAfterPrison) ///
 label booktabs nonotes noobs nomtitle collabels(none) ///
 scalars("N Obs") sfmt(0) ///
-mgroups("Black Drug Arrest Per Capita", pattern(1 0 0 0) ///
+mgroups("Black to Total Drug Arrest Ratio", pattern(1 0 0 0) ///
 prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span}))  alignment(D{.}{.}{-1})
+
+est clear
+
 
 
 
@@ -117,37 +124,38 @@ scalars("N Obs") sfmt(0) ///
 mgroups("Drug Arrest Per Capita", pattern(1 0 0 0) ///
 prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span}))  alignment(D{.}{.}{-1})
 
-
-
 est clear
 
-qui eststo: reg BlackTotalArrest VoteAfterParole
-qui eststo: reg BlackTotalArrest VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
-qui eststo: reg BlackTotalArrest VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent
-qui eststo: reg BlackTotalArrest VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
+qui eststo: reg BlackTotalRatio VoteAfterParole
+qui eststo: reg BlackTotalRatio VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
+qui eststo: reg BlackTotalRatio VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent
+qui eststo: reg BlackTotalRatio VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
 
-esttab using "vote_after_parole_BlackTotalArrest.tex", replace ///
+esttab using "vote_after_parole_BlackTotalRatio.tex", replace ///
 b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) ///
 keep(VoteAfterParole) ///
 label booktabs nonotes noobs nomtitle collabels(none) ///
 scalars("N Obs") sfmt(0) ///
-mgroups("Black Arrest Per Capita", pattern(1 0 0 0) ///
+mgroups("Black to Total Arrest Ratio", pattern(1 0 0 0) ///
 prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span}))  alignment(D{.}{.}{-1})
 
 est clear
 
-qui eststo: reg BlackDrugArrest VoteAfterParole
-qui eststo: reg BlackDrugArrest VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
-qui eststo: reg BlackDrugArrest VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent
-qui eststo: reg BlackDrugArrest VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
+qui eststo: reg BlackDrugRatio VoteAfterParole
+qui eststo: reg BlackDrugRatio VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
+qui eststo: reg BlackDrugRatio VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent
+qui eststo: reg BlackDrugRatio VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
 
-esttab using "vote_after_parole_blackdrugarrest_percapita.tex", replace ///
+esttab using "vote_after_parole_BlackDrugRatio.tex", replace ///
 b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) ///
 keep(VoteAfterParole) ///
 label booktabs nonotes noobs nomtitle collabels(none) ///
 scalars("N Obs") sfmt(0) ///
-mgroups("Black Drug Arrest Per Capita", pattern(1 0 0 0) ///
+mgroups("Black to Total Drug Arrest Ratio", pattern(1 0 0 0) ///
 prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span}))  alignment(D{.}{.}{-1})
+
+est clear
+
 
 
 
@@ -186,47 +194,60 @@ prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span}))  a
 est clear
 
 
-qui eststo: reg BlackTotalArrest VoteAfterProbation
-qui eststo: reg BlackTotalArrest VoteAfterProbation BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
-qui eststo: reg BlackTotalArrest VoteAfterProbation BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent
-qui eststo: reg BlackTotalArrest VoteAfterProbation BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
+est clear 
+qui eststo: reg BlackTotalRatio VoteAfterProbation
+qui eststo: reg BlackTotalRatio VoteAfterProbation BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
+qui eststo: reg BlackTotalRatio VoteAfterProbation BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent
+qui eststo: reg BlackTotalRatio VoteAfterProbation BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
 
-esttab using "vote_after_probation_BlackTotalArrest.tex", replace ///
+esttab using "vote_after_probation_BlackTotalRatio.tex", replace ///
 b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) ///
 keep(VoteAfterProbation) ///
 label booktabs nonotes noobs nomtitle collabels(none) ///
 scalars("N Obs") sfmt(0) ///
-mgroups("Black Arrest Per Capita", pattern(1 0 0 0) ///
+mgroups("Black to Total Arrest Ratio", pattern(1 0 0 0) ///
 prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span}))  alignment(D{.}{.}{-1})
 
 est clear
 
-qui eststo: reg BlackDrugArrest VoteAfterProbation
-qui eststo: reg BlackDrugArrest VoteAfterProbation BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
-qui eststo: reg BlackDrugArrest VoteAfterProbation BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent
-qui eststo: reg BlackDrugArrest VoteAfterProbation BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
-esttab using "vote_after_probation_blackdrugarrest_percapita.tex", replace ///
+qui eststo: reg BlackDrugRatio VoteAfterProbation
+qui eststo: reg BlackDrugRatio VoteAfterProbation BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
+qui eststo: reg BlackDrugRatio VoteAfterProbation BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent
+qui eststo: reg BlackDrugRatio VoteAfterProbation BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
+
+esttab using "vote_after_probation_BlackDrugRatio.tex", replace ///
 b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) ///
 keep(VoteAfterProbation) ///
 label booktabs nonotes noobs nomtitle collabels(none) ///
 scalars("N Obs") sfmt(0) ///
-mgroups("Black Drug Arrest Per Capita", pattern(1 0 0 0) ///
+mgroups("Black to Total Drug Arrest Ratio", pattern(1 0 0 0) ///
 prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span}))  alignment(D{.}{.}{-1})
 
-est clear 
+est clear
 
 
 
 
 //Now for the more robust research design 
 
+egen id = group(State)
+
 //generating year implemented
 
 bysort State (Year): gen VoteAfterPrisonImplemented = Year if VoteAfterPrison
 bysort State (VoteAfterPrisonImplemented): replace VoteAfterPrisonImplemented = VoteAfterPrisonImplemented[1]
-bysort State (Year): gen VoteAfterParoleImplemented = Year if VoteAfterParole
-bysort State (VoteAfterParoleImplemented): replace VoteAfterParoleImplemented = VoteAfterParoleImplemented[1]
-bysort State (Year): gen VoteAfterProbationImplemented = Year if VoteAfterProbation
-bysort State (VoteAfterProbationImplemented): replace VoteAfterProbationImplemented = VoteAfterProbationImplemented[1]
+
+
+//ssc install csdid
+//ssc install drdid
+//ssc install reghdfe
+//net install ddtiming, from(https://tgoldring.com/code/)
+replace VoteAfterPrisonImplemented = 3000 if VoteAfterPrisonImplemented == .
+csdid BlackTotalRatio, ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
+
+qui: estat event
+csdid_plot
+
+
 
 //reverse causality issue
