@@ -228,26 +228,111 @@ est clear
 
 
 
-//Now for the more robust research design 
+//Now for the more robust research design -- Event Study
 
 egen id = group(State)
 
-//generating year implemented
+//generating year implemented 
 
 bysort State (Year): gen VoteAfterPrisonImplemented = Year if VoteAfterPrison
 bysort State (VoteAfterPrisonImplemented): replace VoteAfterPrisonImplemented = VoteAfterPrisonImplemented[1]
-
+bysort State (Year): gen VoteAfterParoleImplemented = Year if VoteAfterParole
+bysort State (VoteAfterParoleImplemented): replace VoteAfterParoleImplemented = VoteAfterParoleImplemented[1]
+bysort State (Year): gen VoteAfterProbationImplemented = Year if VoteAfterProbation
+bysort State (VoteAfterProbationImplemented): replace VoteAfterProbationImplemented = VoteAfterProbationImplemented[1]
 
 //ssc install csdid
 //ssc install drdid
 //ssc install reghdfe
 //net install ddtiming, from(https://tgoldring.com/code/)
-replace VoteAfterPrisonImplemented = 3000 if VoteAfterPrisonImplemented == .
-csdid BlackTotalRatio, ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
 
+//Effect of Vote After Prison
+
+replace VoteAfterPrisonImplemented = 3000 if VoteAfterPrisonImplemented == .
+csdid TotalArrest, ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
+qui: estat event
+//csdid_plot
+estat simple
+est clear
+//Effect on Total Drug Arrest Per Capita Elapsed Time Since Vote After Prison is Implemented
+csdid DrugArrest, ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
+qui: estat event
+//csdid_plot
+estat simple
+est clear
+
+csdid BlackTotalRatio, ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
+qui: estat event
+//csdid_plot
+estat simple
+est clear
+
+csdid BlackDrugRatio, ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
+qui: estat event
+//csdid_plot
+estat simple
+est clear
+
+
+//Effect of Vote After Parole 
+
+//Effect on Total Drug Arrest Per Capita Elapsed Time Since Vote After Prison is Implemented
+
+replace VoteAfterParoleImplemented = 3000 if VoteAfterParoleImplemented == .
+csdid TotalArrest, ivar(id) time(Year) gvar(VoteAfterParoleImplemented) notyet
+qui: estat event
+//csdid_plot
+estat simple
+est clear
+
+
+csdid DrugArrest, ivar(id) time(Year) gvar(VoteAfterParoleImplemented) notyet
+qui: estat event
+//csdid_plot
+estat simple
+est clear
+
+csdid BlackTotalRatio, ivar(id) time(Year) gvar(VoteAfterParoleImplemented) notyet
+qui: estat event
+//csdid_plot
+estat simple
+est clear
+
+csdid BlackDrugRatio, ivar(id) time(Year) gvar(VoteAfterParoleImplemented) notyet
+qui: estat event
+//csdid_plot
+estat simple
+est clear
+
+//Effect of Vote After Probation 
+
+replace VoteAfterProbationImplemented = 3000 if VoteAfterProbationImplemented == .
+csdid TotalArrest, ivar(id) time(Year) gvar(VoteAfterProbationImplemented) notyet
+qui: estat event
+//csdid_plot
+estat simple
+est clear
+
+
+csdid DrugArrest, ivar(id) time(Year) gvar(VoteAfterProbationImplemented) notyet
+qui: estat event
+//csdid_plot
+estat simple
+est clear
+
+csdid BlackTotalRatio, ivar(id) time(Year) gvar(VoteAfterProbationImplemented) notyet
+qui: estat event
+//csdid_plot
+estat simple
+est clear
+
+csdid BlackDrugRatio, ivar(id) time(Year) gvar(VoteAfterProbationImplemented) notyet
 qui: estat event
 csdid_plot
+estat simple
+est clear
 
+//Robustness checks
 
 
 //reverse causality issue
