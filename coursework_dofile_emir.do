@@ -114,14 +114,14 @@ est clear
 qui eststo: reg DrugArrest VoteAfterParole
 qui eststo: reg DrugArrest VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
 qui eststo: reg DrugArrest VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent
-qui eststo: reg DrugArrest VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
+//qui eststo: reg DrugArrest VoteAfterParole BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp Gov_dem Gov_ind Gov_rep Leg_dem Leg_div Agencies
 
-esttab using "voter_after_parole_drugarrest.tex", replace ///
+esttab using "did_control_table.tex", replace ///
 b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) ///
 keep(VoteAfterParole) ///
 label booktabs nonotes noobs nomtitle collabels(none) ///
 scalars("N Obs") sfmt(0) ///
-mgroups("Drug Arrest Per Capita", pattern(1 0 0 0) ///
+mgroups("Drug Arrest Per Capita", pattern(1 0 0) ///
 prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span}))  alignment(D{.}{.}{-1})
 
 est clear
@@ -261,7 +261,7 @@ qui: estat event
 estat simple
 est clear
 
-csdid BlackTotalRatio, ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
+csdid BlackTotalRatio , ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
 qui: estat event
 //csdid_plot
 estat simple
@@ -328,11 +328,39 @@ est clear
 
 csdid BlackDrugRatio, ivar(id) time(Year) gvar(VoteAfterProbationImplemented) notyet
 qui: estat event
-csdid_plot
+//csdid_plot
 estat simple
 est clear
 
 //Robustness checks
+
+csdid BlackTotalRatio BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct , ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
+qui: estat event
+//csdid_plot
+estat simple
+est clear
+
+csdid BlackDrugRatio BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct , ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
+qui: estat event
+//csdid_plot
+estat simple
+est clear
+
+
+csdid BlackTotalRatio BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent, ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
+qui: estat event
+csdid_plot
+estat simple
+est clear
+
+
+csdid BlackDrugRatio BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent, ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
+qui: estat event
+csdid_plot
+estat simple
+est clear
+
+
 
 
 //reverse causality issue
