@@ -27,6 +27,28 @@ est clear
 //OLS regression
 
 //start with the voting after prison
+
+
+
+preserve
+keep if BlackTotalRatio != .
+sum BlackTotalRatio
+drop if BlackTotalArrest == .
+sum BlackTotalArrest
+keep if BlackPct != .
+gen black_disparity = BlackTotalRatio-BlackPct/100
+sum black_disparity
+restore
+
+preserve
+keep if BlackDrugRatio != .
+sum BlackDrugRatio
+sum BlackDrugArrest
+keep if BlackPct != .
+gen blackdrugdisparity = BlackDrugRatio - BlackPct/100
+sum blackdrugdisparity
+restore
+
 est clear
 qui eststo: reg TotalArrest VoteAfterPrison
 qui eststo: reg TotalArrest VoteAfterPrison BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct 
@@ -261,9 +283,9 @@ qui: estat event
 estat simple
 est clear
 
-csdid BlackTotalRatio , ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
+csdid BlackTotalRatio , ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) 
 qui: estat event
-//csdid_plot
+csdid_plot
 estat simple
 est clear
 
@@ -349,18 +371,40 @@ est clear
 
 csdid BlackTotalRatio BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent, ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
 qui: estat event
-csdid_plot
+//csdid_plot
 estat simple
 est clear
 
 
 csdid BlackDrugRatio BlackPct HispPct BlackPct_2000 HispPct_2000 Under19Pct Over65Pct GDPpercapita Growth Unemp SurplusDeficitPercent, ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
 qui: estat event
-csdid_plot
+//csdid_plot
 estat simple
 est clear
 
+/*
+//sensitivity analysis
+preserve
+qui sum Year, meanonly
+replace VoteAfterPrisonImplemented = cond(mi(VoteAfterPrisonImplemented), r(max) + 1, VoteAfterPrisonImplemented)
+qui csdid BlackDrugRatio, ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
+csdid_estat event, estore(csdid)
+estimates restore csdid
+
+local plotopts xtitle(Mbar) ytitle(95% Robust CI)
+honestdid, pre(3/24) post(28/38) mvec(0(0.5)2) coefplot xtitle(Mbar) ytitle(95% Robust CI)
+restore
+
+qui sum Year, meanonly
+replace VoteAfterPrisonImplemented = cond(mi(VoteAfterPrisonImplemented), r(max) + 1, VoteAfterPrisonImplemented)
+csdid BlackTotalRatio, ivar(id) time(Year) gvar(VoteAfterPrisonImplemented) notyet
+csdid_estat event, estore(csdid)
+estimates restore csdid
+
+local plotopts xtitle(Mbar) ytitle(95% Robust CI)
+honestdid, pre(3/24) post(28/38) mvec(0(0.5)2) coefplot xtitle(Mbar) ytitle(95% Robust CI)
 
 
+*/
 
 //reverse causality issue
