@@ -1,0 +1,15 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{3}{D{.}{.}{-1}}}
+\toprule
+                    &\multicolumn{1}{c}{Vote After Prison}&\multicolumn{1}{c}{Vote After Parole}&\multicolumn{1}{c}{Vote After Probation}\\\cmidrule(lr){2-2}\cmidrule(lr){3-3}\cmidrule(lr){4-4}
+                    &\multicolumn{1}{c}{(1)}         &\multicolumn{1}{c}{(2)}         &\multicolumn{1}{c}{(3)}         \\
+\midrule
+Total arrest over population&      -0.151\sym{***}&      -0.160\sym{***}&      -0.067\sym{***}\\
+                    &     (0.009)         &     (0.009)         &     (0.008)         \\
+\addlinespace
+Constant            &       1.010\sym{***}&       1.141\sym{***}&       1.134\sym{***}\\
+                    &     (0.043)         &     (0.045)         &     (0.039)         \\
+\bottomrule
+\end{tabular}
+}
